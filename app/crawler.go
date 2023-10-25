@@ -25,7 +25,7 @@ func (v *VisitedSites) Get(visited string) bool {
 
 type Fetcher interface {
 	// Fetch returns the body of URL and a slice of URLs found on that page
-	Fetch(url string) (statistics Statistics, urls []string, err error)
+	Fetch(url string) (title string, urls []string, err error)
 }
 
 func CrawlInternal(visited *VisitedSites, url string, depth int, fetcher Fetcher) {
@@ -40,20 +40,21 @@ func CrawlInternal(visited *VisitedSites, url string, depth int, fetcher Fetcher
 		visited.Add(url)
 	}
 
-	statistics, urls, err := fetcher.Fetch(url)
+	title, urls, err := fetcher.Fetch(url)
 
 	if err != nil {
 		log.Printf("|Warn| - %s", err)
 		return
 	}
 
-	log.Printf("|Info| - Found %s %q\n", url, statistics)
+	log.Printf("|Info| - Found %s %q\n", url, title)
 
 	for _, u := range urls {
 		go CrawlInternal(visited, u, depth-1, fetcher)
 	}
 }
 
+// Start crawling for X depth
 func Crawl(url string, depth int, fetcher Fetcher) {
 	visited := VisitedSites{
 		mu:      sync.Mutex{},

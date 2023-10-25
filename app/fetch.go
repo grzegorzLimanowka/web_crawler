@@ -30,6 +30,7 @@ func fetchHTML(URL string) (io.ReadCloser, error) {
 	return res.Body, nil
 }
 
+// TODO: fetchTitle
 // This function should extract number of counted words in a `HashMap` format
 func extractWords(body io.ReadCloser) (Statistics, []string, error) {
 
@@ -55,7 +56,7 @@ func extractWords(body io.ReadCloser) (Statistics, []string, error) {
 
 				return statistics, urls, fmt.Errorf("error tokenizing HTML: %v", tokenizer.Err())
 			}
-		// case html.SelfClosingTagToken
+
 		case html.TextToken:
 			{
 				section := tokenizer.Token().Data
@@ -66,36 +67,37 @@ func extractWords(body io.ReadCloser) (Statistics, []string, error) {
 				}
 			}
 		}
+		// TODO: Add extracting URLs, preferably only around the 'base' website URL, so we don't go to unrelated sites
+		// case html.SelfClosingTagToken:
+		// 	{
+		//      // TODO..
+		// 	}
+		// default:
+		// 	{
+		// 		// fmt.Println("Type", tokenizer.Token().Type)
+		// 		// fmt.Println("Attr", tokenizer.Token().Attr)
+		// 		// fmt.Println("Data", tokenizer.Token().String())
+		// 	}
+		// }
+
 	}
 }
 
-func fetchWords(URL string) (Statistics, error) {
+// TODO: Make it struct implementing interface
+func fetchWords(URL string) (Statistics, []string, error) {
 	site, err := fetchHTML(URL)
 
 	if err != nil {
-		return Statistics{}, err
+		return Statistics{}, nil, err
 	}
 
 	defer site.Close()
 
 	statistics, urls, err := extractWords(site)
-	fmt.Println(urls)
 
 	if err != nil {
-		return statistics, err
+		return statistics, urls, err
 	}
 
-	return statistics, nil
+	return statistics, urls, nil
 }
-
-type StatisticsFetcher map[string]*FetchStatistics
-
-type FetchStatistics struct {
-	statistics Statistics
-	urls       []string
-}
-
-// func (f *StatisticsFetcher) Fetch(url string) (string, []string, error) {
-// 	statistics, err := fetchWords(url)
-
-// }
