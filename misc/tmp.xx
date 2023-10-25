@@ -1,0 +1,51 @@
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+)
+
+// http, html/tokenizer, sync, itd.
+
+// TODO: Add logging
+
+type SiteReader struct {
+	r io.Reader
+}
+
+func (sr *SiteReader) Read(p []byte) (n int, err error) {
+
+	//
+
+	return 0, nil
+}
+
+func main() {
+	// resp, err := http.Get("http://example.com")
+	resp, err := http.Get("https://golangdocs.com/")
+
+	fmt.Println(resp.Body)
+
+	site := make([]byte, 10000)
+
+	// x, y := resp.Body.Read(site)
+
+	// fmt.Println(x, y)
+	fmt.Println(site)
+	fmt.Println(err)
+
+	// s := resp.Body
+	// r := SiteReader{s}
+
+	// io.Copy(os.Stdout, &r)
+
+	myString := string(site[:])
+	fmt.Println(myString)
+}
+
+/*
+	s := strings.NewReader("Lbh penpxrq gur pbqr!  ")
+	r := rot13Reader{s}
+	io.Copy(os.Stdout, &r)
+*/

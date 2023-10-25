@@ -1,0 +1,3 @@
+golang.org/x/net v0.17.0 h1:pVaXccu2ozPjCXewfr1S7xza/zcXTity9cCdXQYSjIM=
+golang.org/x/net v0.17.0/go.mod h1:NxSsAGuq816PNPmqtQdLE42eU2Fs7NoRIZrHJAlaCOE=
+golang.org/x/tour v0.1.0/go.mod h1:DUZC6G8mR1AXgXy73r8qt/G5RsefKIlSj6jBMc8b9Wc=

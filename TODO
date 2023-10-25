@@ -1,0 +1,24 @@
+Zadanie: Web Scraper z Konkurencyjnością i Cachingiem
+
+Cel:
+
+Stwórz narzędzie, które skrapuje kilka stron internetowych i zwraca zestawienie najczęściej pojawiających się słów.
+Wykorzystaj goroutines, kanały i standardową bibliotekę Go.
+
+Wymagania:
+
+- [x] Wysoka Wydajność: Zaimplementować mechanizm cache'owania.
+- [x] Konkurencyjność: Użyć goroutines i kanałów do skrapowania kilku stron równocześnie.
+- [ ] Biblioteka Standardowa: Użyć http, html/tokenizer, sync, itd.
+  - [x] http
+  - [x] html/tokenizer
+  - [ ] sync
+
+Przykładowe kroki:
+
+    Stworzyć listę kilku URL do przeskanowania.
+    Napisać funkcję, która skrapuje stronę i zwraca najczęściej występujące słowa.
+    Wykorzystać goroutines do równoczesnego skrapowania stron.
+    Zbierać wyniki w jednym miejscu, korzystając z kanałów.
+    Zaimplementować prosty cache, by unikać ponownego skrapowania tych samych stron.
+    Opcjonalnie: Ograniczyć liczbę równocześnie działających goroutines, używając semaphore lub channel.

@@ -1,0 +1,98 @@
+
+func fetchHTML(URL string) (io.ReadCloser, error) {
+	res, err := http.Get(URL)
+
+	if err != nil {
+		return nil, fmt.Errorf("error fetching URL: %v", err)
+	}
+
+	// check status code
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("response status code was: %d", res.StatusCode)
+	}
+
+	// check content type
+	ctype := res.Header.Get("Content-Type")
+	if !strings.HasPrefix(ctype, "text/html") {
+		return nil, fmt.Errorf("response content type was %s not text/html", ctype)
+	}
+
+	return res.Body, nil
+}
+
+func extractTitle(body io.ReadCloser) (string, error) {
+	tokenizer := html.NewTokenizer(body)
+
+	for {
+		tokenType := tokenizer.Next()
+
+		// [Non-exhaustive]
+		switch tokenType {
+		case html.ErrorToken:
+			{
+				err := tokenizer.Err()
+
+				if err == io.EOF {
+					return "", fmt.Errorf("io.EOF ")
+				}
+
+				// error tokenizing, HTML was likely malformed.
+				return "", fmt.Errorf("error tokenizing HTML: %v", tokenizer.Err())
+			}
+		case html.StartTagToken:
+			{
+				token := tokenizer.Token()
+
+				if token.Data == "title" {
+					tokenType = tokenizer.Next()
+
+					if tokenType == html.TextToken {
+						//report the page title and break out of the loop
+						return tokenizer.Token().Data, nil
+					}
+				}
+			}
+		}
+	}
+}
+
+
+func fetchTitle(URL string) (string, error) {
+	site, err := fetchHTML(URL)
+
+	if err != nil {
+		return "", err
+	}
+
+	defer site.Close()
+
+	title, err := extractTitle(site)
+
+	if err != nil {
+		return "", err
+	}
+
+	return title, nil
+}
+
+
+func main() {
+	title, err := fetchTitle("http://example.com")
+
+	if err != nil {
+		log.Fatalf("error fetching page title: %v\n", err)
+	}
+
+	fmt.Println(title)
+
+	statistics, err := fetchWords("https://drstearns.github.io/tutorials/tokenizing/")
+
+	if err != nil {
+		log.Fatalf("error fetching words: %v\n", err)
+	}
+
+	mostPopular := statistics.MostPopular(2, 10)
+	fmt.Println(mostPopular)
+
+}
+
